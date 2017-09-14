@@ -10,25 +10,16 @@
             <span class="sortby">Sort by:</span>
             <a href="javascript:void(0)" class="default cur">Default</a>
             <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
-            <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
+            <a href="javascript:void(0)" class="filterby stopPop" @click="showFitlerPop()">Filter by</a>
           </div>
           <div class="accessory-result">
             <!-- filter -->
-            <div class="filter stopPop" id="filter">
+            <div class="filter stopPop" id="filter" :class="{'filterby-show': filterby}">
               <dl class="filter-price">
                 <dt>Price:</dt>
-                <dd><a href="javascript:void(0)">All</a></dd>
-                <dd>
-                  <a href="javascript:void(0)">0 - 100</a>
-                </dd>
-                <dd>
-                  <a href="javascript:void(0)">100 - 500</a>
-                </dd>
-                <dd>
-                  <a href="javascript:void(0)">500 - 1000</a>
-                </dd>
-                <dd>
-                  <a href="javascript:void(0)">1000 - 2000</a>
+                <dd><a href="javascript:void(0)" :class="{cur: priceChecked == 'all'}" @click="priceChecked='all'">All</a></dd>
+                <dd v-for='(price, index) in priceFilter'>
+                  <a href="javascript:void(0)" :class="{'cur': priceChecked == index}" @click="setPriceFilter(index)" >{{price.startPrice}} - {{price.endPrice}}</a>
                 </dd>
               </dl>
             </div>
@@ -39,7 +30,7 @@
                 <ul>
                   <li v-for="good in goodsList" :key=good.productId>
                     <div class="pic">
-                      <a href="#"><img src="static/1.jpg" alt=""></a>
+                      <a href="#"><img :src="'/static/'+good.prodcutImg" alt=""></a>
                     </div>
                     <div class="main">
                       <div class="name">{{good.productName}}</div>
@@ -55,6 +46,7 @@
           </div>
         </div>
       </div>
+      <div class="md-overay" v-show="overLayFlag" @click="closePop"></div>
       <mall-footer></mall-footer>
     </div>
 </template>
@@ -66,7 +58,24 @@
   export default{
     data () {
       return {
-        goodsList: []
+        goodsList: [],
+        priceFilter: [
+          {
+            startPrice: '0:00',
+            endPrice: '500.00'
+          },
+          {
+            startPrice: '500:00',
+            endPrice: '1000.00'
+          },
+          {
+            startPrice: '1000:00',
+            endPrice: '2000.00'
+          }
+        ],
+        priceChecked: 'all',
+        filterby: false,
+        overLayFlag: false
       }
     },
     components: {
@@ -85,7 +94,34 @@
           this.goodsList = res.result
           console.log(this.goodsList)
         })
+      },
+      setPriceFilter (index) {
+        console.log(index)
+        this.priceChecked = index
+        this.closePop()
+      },
+      showFitlerPop () {
+        this.filterby = true
+        this.overLayFlag = true
+      },
+      closePop () {
+        this.filterby = false
+        this.overLayFlag = false
       }
     }
   }
 </script>
+
+<style>
+  .filterby-show{
+    z-index: 999
+  }
+  .md-overay{
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    position: absolute;
+    z-index: 99;
+    top: 0;
+  }
+</style>
