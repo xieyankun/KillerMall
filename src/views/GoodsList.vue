@@ -30,7 +30,7 @@
                 <ul>
                   <li v-for="good in goodsList" :key=good.productId>
                     <div class="pic">
-                      <a href="#"><img v-lazy="'/static/'+good.prodcutImg" alt=""></a>
+                      <a href="#"><img v-lazy="'/static/'+good.productImage" alt=""></a>
                     </div>
                     <div class="main">
                       <div class="name">{{good.productName}}</div>
@@ -91,7 +91,7 @@
         axios.get('/goods').then((result) => {
           console.log(result)
           var res = result.data
-          this.goodsList = res.result
+          this.goodsList = res.result.list
           console.log(this.goodsList)
         })
       },
